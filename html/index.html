@@ -1,0 +1,53 @@
+<!-- yt-sync | A minimal YouTube sync site for watching videos with friends.
+Copyright (C) 2021  David A. Wilson
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>. -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="shortcut icon" href="../assets/favicon.ico" type="image/x-icon">
+
+    <title>YT-Sync</title>
+</head>
+
+<body>
+    <div class="container">
+        <input type="text" id="ytID" placeholder="Enter URL or ID">
+        <button id="vidBtn">Change Video</button>
+    </div>
+
+    <div id="player"></div>
+    <script src="../js/player.js"></script>
+
+    <div id="peersContainer" class="container">
+        <label>How many peers?</label>
+        <input type="number" id="numPeers" min="1" value="1">
+        <button id="setPeers">Set Peers</button>
+    </div>
+    <div id="descContainer" class="container">
+        <textarea id="peerDesc" placeholder="Enter answer or create offer..."></textarea>
+        <button id="offerAnswerBtn">Create Offer</button>
+    </div>
+
+    <script src="../js/index.js"></script>
+</body>
+
+</html>

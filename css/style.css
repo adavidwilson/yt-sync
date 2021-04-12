@@ -1,0 +1,56 @@
+/* yt-sync | A minimal YouTube sync site for watching videos with friends.
+Copyright (C) 2021  David A. Wilson
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>. */
+
+html, body {
+    /* Destroy default spacing */
+    margin: 0;
+    padding: 0;
+
+    /* Set size to page for centering */
+    width: 100%;
+    height: 100%;
+
+    /* Center content */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    /* Death black theme */
+    background: black;
+    color: #bbb;
+}
+
+div {
+    margin: 50px;
+}
+
+textarea, input, button {
+    background-color: #333;
+    border: 1px solid white;
+    color: inherit;
+    margin: 0 10px;
+}
+
+#ytID {
+    margin-right: 20px;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    width: 640px;
+}
