@@ -25,51 +25,69 @@ firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 //    after the API code downloads.
 var player;
 function onYouTubeIframeAPIReady() {
-    player = new YT.Player('player', {
-        height: '390',
-        width: '640',
-        videoId: 'M7lc1UVf-VE',
-        events: {
-            // 'onReady': onPlayerReady,
-            'onStateChange': onPlayerStateChange
-        }
-    });
+  player = new YT.Player('player', {
+    height: '390',
+    width: '640',
+    videoId: 'M7lc1UVf-VE',
+    events: {
+      // 'onReady': onPlayerReady, possibly use to wait for slowest peer
+      'onStateChange': onPlayerStateChange
+    }
+  });
 }
 
 function onPlayerStateChange(event) {
-    if (event.data == YT.PlayerState.PLAYING) {
-        dc.forEach(d => d.send('play'));
-        const curTime = player.getCurrentTime();
-        dc.forEach(d => d.send(JSON.stringify({ action: 'seek', time: curTime })));
-    } else if (event.data == YT.PlayerState.PAUSED) {
-        dc.forEach(d => d.send('pause'));
-    }
+  // When the player's state changes, the event's data property will
+  // specify one of the following states with namespaced constants in
+  // YT.PlayerState:
+  //   UNSTARTED (-1), ENDED (0), PLAYING (1), PAUSED (2),
+  //   BUFFERING(3), CUED(4)
+  //
+  // On loading a new video, -1 is broadcast immediately followed by 3,
+  // then 1.
+
+  switch (event.data) {
+    case YT.PlayerState.UNSTARTED:
+      // Unused, maybe use to trigger video change message
+      break;
+    case YT.PlayerState.ENDED:
+      // Unused, will use when playlist is implemented
+      break;
+    case YT.PlayerState.PLAYING:
+      dc.forEach(d => d.send('play'));
+      const curTime = player.getCurrentTime();
+      dc.forEach(d => d.send(JSON.stringify({ action: 'seek', time: curTime })));
+      break;
+    case YT.PlayerState.PAUSED:
+      dc.forEach(d => d.send('pause'));
+      break;
+    case YT.PlayerState.BUFFERING:
+      // Unused, might be needed for slowest peer autoplay
+      break;
+    case YT.PlayerState.CUED:
+      // Unused, might be needed for playlist support
+      break;
+    default:
+      console.log("Invalid player state");
+      break;
+  }
 }
 function stopVideo() {
-    player.stopVideo();
-}
-
-const startPlayer = () => {
-    // 4. The API will call this function when the video player is ready.
-    // function onPlayerReady(event) {
-    //     event.target.playVideo();
-    // }
-    player.playVideo();
-
+  player.stopVideo();
 }
 
 // Maybe the button isn't needed at all except for playlist functionality...
 document.querySelector("#vidBtn").addEventListener("click", () => {
-    const text = document.querySelector("#ytID").value;
+  const text = document.querySelector("#ytID").value;
 
-    // RegExp courtesy of https://webapps.stackexchange.com/questions/54443/format-for-id-of-youtube-video
-    const id = text.match(/[0-9A-Za-z_-]{10}[048AEIMQUYcgkosw]/)[0]
-    player.loadVideoById(id);
-    dc.forEach(d => d.send(JSON.stringify({ action: 'changeId', id: id })));
+  // RegExp courtesy of https://webapps.stackexchange.com/questions/54443/format-for-id-of-youtube-video
+  const id = text.match(/[0-9A-Za-z_-]{10}[048AEIMQUYcgkosw]/)[0]
+  player.loadVideoById(id);
+  dc.forEach(d => d.send(JSON.stringify({ action: 'changeId', id: id })));
 })
 
 document.querySelector("#ytID").addEventListener("keyup", e => {
-    if (e.key === "Enter") {
-        document.querySelector("#vidBtn").click();
-    }
+  if (e.key === "Enter") {
+    document.querySelector("#vidBtn").click();
+  }
 })

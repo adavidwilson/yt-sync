@@ -29,77 +29,75 @@ const dc = [];
 let i = 0;
 
 peersBtn.addEventListener("click", () => {
-    numPeers = numPeersBox.value;
+  numPeers = numPeersBox.value;
 
-    peersContainer.style.display = "none";
+  peersContainer.style.display = "none";
 
-    for (let j = 0; j < numPeers; j++) {
-        pc.push(new RTCPeerConnection(config));
-        // This occurs once the local description has been created
-        pc[j].onicecandidate = () => {
-            peerDescBox.value = JSON.stringify(pc[j].localDescription);
-        }
+  for (let j = 0; j < numPeers; j++) {
+    pc.push(new RTCPeerConnection(config));
+    // This occurs once the local description has been created
+    pc[j].onicecandidate = () => {
+      peerDescBox.value = JSON.stringify(pc[j].localDescription);
     }
+  }
 });
 
 const onConnection = () => {
-    console.log(`Connected to Peer ${i}!`);
+  console.log(`Connected to Peer ${i}!`);
 
-    i++;
+  i++;
 
-    console.log(i);
-    if (i >= numPeers) {
-        descContainer.style.display = "none";
-    }
-    // startPlayer();
+  console.log(i);
+  if (i >= numPeers) {
+    descContainer.style.display = "none";
+  }
 };
 
 const onMessage = m => {
-    console.log(m.data);
-    if (m.data == "play") {
-        player.playVideo();
-    } else if (m.data == "pause") {
-        player.pauseVideo();
-    } else if (JSON.parse(m.data).action == 'changeUrl') {
-        player.loadVideoByUrl(`${JSON.parse(m.data).url}?version=3`);
-    } else if (JSON.parse(m.data).action == 'changeId') {
-        if (numPeers > 1) {
-            const text = JSON.parse(m.data).id;
-            dc.forEach(d => d.send(JSON.stringify({ action: 'changeId', id: text })));
-        }
-        player.loadVideoById(JSON.parse(m.data).id);
-    } else if (JSON.parse(m.data).action == 'seek') {
-        const otherTime = JSON.parse(m.data).time;
-        if (Math.abs(player.getCurrentTime() - otherTime) > 2) {
-            player.seekTo(JSON.parse(m.data).time);
-        }
+  if (m.data == "play") {
+    player.playVideo();
+  } else if (m.data == "pause") {
+    player.pauseVideo();
+  } else if (JSON.parse(m.data).action == 'changeUrl') {
+    player.loadVideoByUrl(`${JSON.parse(m.data).url}?version=3`);
+  } else if (JSON.parse(m.data).action == 'changeId') {
+    if (numPeers > 1) {
+      const text = JSON.parse(m.data).id;
+      dc.forEach(d => d.send(JSON.stringify({ action: 'changeId', id: text })));
     }
+    player.loadVideoById(JSON.parse(m.data).id);
+  } else if (JSON.parse(m.data).action == 'seek') {
+    const otherTime = JSON.parse(m.data).time;
+    if (Math.abs(player.getCurrentTime() - otherTime) > 2) {
+      player.seekTo(JSON.parse(m.data).time);
+    }
+  }
 };
 
 peerDescBox.addEventListener("keyup", () => {
-    if (peerDescBox.value) {
-        offerAnswerBtn.textContent = "Accept";
-    } else {
-        offerAnswerBtn.textContent = "Create Offer";
-    }
+  if (peerDescBox.value) {
+    offerAnswerBtn.textContent = "Accept";
+  } else {
+    offerAnswerBtn.textContent = "Create Offer";
+  }
 });
 
 offerAnswerBtn.addEventListener("click", async () => {
-    if (offerAnswerBtn.textContent == "Create Offer") {
-        dc.push(pc[i].createDataChannel('dat'));
-        dc[i].onopen = onConnection;
-        dc[i].onmessage = onMessage;
+  if (offerAnswerBtn.textContent == "Create Offer") {
+    dc.push(pc[i].createDataChannel('dat'));
+    dc[i].onopen = onConnection;
+    dc[i].onmessage = onMessage;
 
-        pc[i].setLocalDescription();
-    } else {
-        // Doesn't affect caller functionality
-        pc[i].ondatachannel = e => {
-            dc.push(e.channel);
-            dc[i].onopen = onConnection;
-            dc[i].onmessage = onMessage;
-        };
+    pc[i].setLocalDescription();
+  } else {
+    // Doesn't affect caller functionality
+    pc[i].ondatachannel = e => {
+      dc.push(e.channel);
+      dc[i].onopen = onConnection;
+      dc[i].onmessage = onMessage;
+    };
 
-        await pc[i].setRemoteDescription(JSON.parse(peerDescBox.value));
-        pc[i].localDescription || pc[i].setLocalDescription();
-    }
+    await pc[i].setRemoteDescription(JSON.parse(peerDescBox.value));
+    pc[i].localDescription || pc[i].setLocalDescription();
+  }
 });
