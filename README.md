@@ -1,9 +1,9 @@
 # yt-sync
 
-A super minimal, fully P2P, WebRTC-based, infrastructure-, and dependency-free
-synchronization utility for watching YouTube with friends written in pure HTML,
-CSS, and JS. Should work in any modern browser with WebRTC support, but use a
-Chromium-based browser for the best experience!
+A super minimal, fully P2P, WebRTC-based, infrastructure-, and (almost)
+dependency-free synchronization utility for watching YouTube with friends
+written in pure HTML, CSS, and JS. Should work in any modern browser with WebRTC
+support, but use a Chromium-based browser for the best experience!
 
 ## Features
 
@@ -33,6 +33,8 @@ If there is anything you feel is missing or not working correctly, or you just h
 - [ ] Add built-in video/audio chat
 
 ## License
+
+![AGPLv3 logo](https://www.gnu.org/graphics/agplv3-155x51.png)
 
 Copyright (C) 2021  David A. Wilson
 

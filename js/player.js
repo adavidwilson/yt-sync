@@ -58,15 +58,18 @@ const startPlayer = () => {
 
 }
 
+// Maybe the button isn't needed at all except for playlist functionality...
 document.querySelector("#vidBtn").addEventListener("click", () => {
     const text = document.querySelector("#ytID").value;
 
-    if (text.includes("http")) {
-        const id = text.split('=')[1];
-        player.loadVideoById(id);
-        dc.forEach(d => d.send(JSON.stringify({ action: 'changeId', id: id })));
-    } else {
-        player.loadVideoById(text);
-        dc.forEach(d => d.send(JSON.stringify({ action: 'changeId', id: text })));
+    // RegExp courtesy of https://webapps.stackexchange.com/questions/54443/format-for-id-of-youtube-video
+    const id = text.match(/[0-9A-Za-z_-]{10}[048AEIMQUYcgkosw]/)[0]
+    player.loadVideoById(id);
+    dc.forEach(d => d.send(JSON.stringify({ action: 'changeId', id: id })));
+})
+
+document.querySelector("#ytID").addEventListener("keyup", e => {
+    if (e.key === "Enter") {
+        document.querySelector("#vidBtn").click();
     }
 })
