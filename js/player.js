@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 // 2. This code loads the IFrame Player API code asynchronously.
+var changing = false;
 var tag = document.createElement('script');
 
 tag.src = "https://www.youtube.com/iframe_api";
@@ -49,23 +50,32 @@ function onPlayerStateChange(event) {
   switch (event.data) {
     case YT.PlayerState.UNSTARTED:
       // Unused, maybe use to trigger video change message
+      console.log("UNSTARTED");
       break;
     case YT.PlayerState.ENDED:
       // Unused, will use when playlist is implemented
+      console.log("ENDED");
       break;
     case YT.PlayerState.PLAYING:
+      changing = false;
+      console.log("PLAYING");
       dc.forEach(d => d.send('play'));
       const curTime = player.getCurrentTime();
       dc.forEach(d => d.send(JSON.stringify({ action: 'seek', time: curTime })));
       break;
     case YT.PlayerState.PAUSED:
-      dc.forEach(d => d.send('pause'));
+      console.log("PAUSED");
+      if (!changing) {
+        dc.forEach(d => d.send('pause'));
+      }
       break;
     case YT.PlayerState.BUFFERING:
       // Unused, might be needed for slowest peer autoplay
+      console.log("BUFFERING");
       break;
     case YT.PlayerState.CUED:
       // Unused, might be needed for playlist support
+      console.log("CUED");
       break;
     default:
       console.log("Invalid player state");
@@ -79,6 +89,7 @@ function stopVideo() {
 // Maybe the button isn't needed at all except for playlist functionality...
 document.querySelector("#vidBtn").addEventListener("click", () => {
   const text = document.querySelector("#ytID").value;
+  changing = true;
 
   // RegExp courtesy of https://webapps.stackexchange.com/questions/54443/format-for-id-of-youtube-video
   const id = text.match(/[0-9A-Za-z_-]{10}[048AEIMQUYcgkosw]/)[0]

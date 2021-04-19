@@ -54,13 +54,13 @@ const onConnection = () => {
 };
 
 const onMessage = m => {
+  console.log(m.data);
   if (m.data == "play") {
     player.playVideo();
   } else if (m.data == "pause") {
     player.pauseVideo();
-  } else if (JSON.parse(m.data).action == 'changeUrl') {
-    player.loadVideoByUrl(`${JSON.parse(m.data).url}?version=3`);
   } else if (JSON.parse(m.data).action == 'changeId') {
+    changing = true;
     if (numPeers > 1) {
       const text = JSON.parse(m.data).id;
       dc.forEach(d => d.send(JSON.stringify({ action: 'changeId', id: text })));
