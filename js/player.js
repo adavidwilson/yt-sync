@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 // 2. This code loads the IFrame Player API code asynchronously.
+var changing = false;
 var tag = document.createElement('script');
 
 tag.src = "https://www.youtube.com/iframe_api";
@@ -56,6 +57,7 @@ function onPlayerStateChange(event) {
       console.log("ENDED");
       break;
     case YT.PlayerState.PLAYING:
+      changing = false;
       console.log("PLAYING");
       dc.forEach(d => d.send('play'));
       const curTime = player.getCurrentTime();
@@ -63,7 +65,9 @@ function onPlayerStateChange(event) {
       break;
     case YT.PlayerState.PAUSED:
       console.log("PAUSED");
-      changing = changing ? false : dc.forEach(d => d.send('pause'));
+      if (!changing) {
+        dc.forEach(d => d.send('pause'));
+      }
       break;
     case YT.PlayerState.BUFFERING:
       // Unused, might be needed for slowest peer autoplay
