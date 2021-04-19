@@ -63,7 +63,7 @@ function onPlayerStateChange(event) {
       break;
     case YT.PlayerState.PAUSED:
       console.log("PAUSED");
-      dc.forEach(d => d.send('pause'));
+      changing = changing ? false : dc.forEach(d => d.send('pause'));
       break;
     case YT.PlayerState.BUFFERING:
       // Unused, might be needed for slowest peer autoplay
@@ -85,6 +85,7 @@ function stopVideo() {
 // Maybe the button isn't needed at all except for playlist functionality...
 document.querySelector("#vidBtn").addEventListener("click", () => {
   const text = document.querySelector("#ytID").value;
+  changing = true;
 
   // RegExp courtesy of https://webapps.stackexchange.com/questions/54443/format-for-id-of-youtube-video
   const id = text.match(/[0-9A-Za-z_-]{10}[048AEIMQUYcgkosw]/)[0]
