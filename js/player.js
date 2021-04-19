@@ -49,23 +49,29 @@ function onPlayerStateChange(event) {
   switch (event.data) {
     case YT.PlayerState.UNSTARTED:
       // Unused, maybe use to trigger video change message
+      console.log("UNSTARTED");
       break;
     case YT.PlayerState.ENDED:
       // Unused, will use when playlist is implemented
+      console.log("ENDED");
       break;
     case YT.PlayerState.PLAYING:
+      console.log("PLAYING");
       dc.forEach(d => d.send('play'));
       const curTime = player.getCurrentTime();
       dc.forEach(d => d.send(JSON.stringify({ action: 'seek', time: curTime })));
       break;
     case YT.PlayerState.PAUSED:
+      console.log("PAUSED");
       dc.forEach(d => d.send('pause'));
       break;
     case YT.PlayerState.BUFFERING:
       // Unused, might be needed for slowest peer autoplay
+      console.log("BUFFERING");
       break;
     case YT.PlayerState.CUED:
       // Unused, might be needed for playlist support
+      console.log("CUED");
       break;
     default:
       console.log("Invalid player state");

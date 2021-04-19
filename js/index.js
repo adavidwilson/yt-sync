@@ -54,6 +54,7 @@ const onConnection = () => {
 };
 
 const onMessage = m => {
+  console.log(m.data);
   if (m.data == "play") {
     player.playVideo();
   } else if (m.data == "pause") {
